@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Report {
+  id              Int        @id @default(autoincrement())
+  type            String     // 事件类型，如 'error' 或 'report'
+  pageUrl         String?    // 页面地址
+  time            DateTime   // 发生时间
+  uuid            String     @unique // 页面唯一标识
+  apikey          String     // 项目id
+  status          String?    // 事件状态
+  browserVersion  String?    // 浏览器版本
+  browser         String?    // 浏览器名称
+  osVersion       String?    // 操作系统版本
+  os              String?    // 操作系统名称
+  ua              String?    // 用户代理
+  device          String?    // 设备种类描述
+  deviceType      String?    // 设备种类，如 pc
+  recordScreenId  String       // 录屏ID
+
+  // Error-specific fields
+  message    String?    // 错误信息
+  errorContext    Json?      // 错误上下文信息
+  @@index([recordScreenId])
+}
+
+model RecordScreen {
+  id              Int       @id @default(autoincrement())
+  recordScreenId String    @unique // 录屏id，唯一约束
+  events          String    // 录屏内容
+}
+
